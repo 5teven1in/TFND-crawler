@@ -1,7 +1,7 @@
 URL = "https://consumer.fda.gov.tw/food/TFND.aspx?nodeID=178"
 
 [TagType]
-"全部" = ""
+"全部" = "0"
 "穀物類" = "1"
 "澱粉類" = "2"
 "堅果及種子類" = "3"
