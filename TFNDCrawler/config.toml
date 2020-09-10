@@ -1,4 +1,6 @@
-URL = "https://consumer.fda.gov.tw/food/TFND.aspx?nodeID=178"
+URL = "https://consumer.fda.gov.tw/Food"
+queryURI = "/TFND.aspx?nodeID=178"
+detailURI = "/tfndDetail.aspx?nodeID=178"
 
 [TagType]
 "全部" = "0"
