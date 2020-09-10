@@ -56,7 +56,10 @@ class TFNDCrawler():
         res = httpx.get(
             f"{self.URL}{self.config.get('detailURI')}&f=0&id={ID}")
         soup = BS(res.text, "html.parser")
+        results = []
         for tr in soup.find("table").find_all("tr")[1:]:
+            result = {}
             for td in tr.find_all("td")[:-2]:
-                print(td.get("data-th"), td.text)
-        return 0
+                result[td.get("data-th")] = td.text.strip()
+            results.append(result)
+        return results
