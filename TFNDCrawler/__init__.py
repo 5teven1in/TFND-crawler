@@ -18,12 +18,11 @@ class TFNDCrawler():
             f += self.config.get("SearchField").get(field)
             f += ","
         t = self.config.get("TagType").get(tagtype)
-        url = f"{self.URL}&t={t}&f={f}&k={kw}"
+        url = f"{self.URL}{self.config.get('queryURI')}&t={t}&f={f}&k={kw}"
         return url
 
     def search(self, kw="", tagtype="全部", searchfield=[]):
         queryURL = self.makequery(kw, tagtype, searchfield)
-        print(queryURL)
         res = httpx.get(queryURL)
         soup = BS(res.text, "html.parser")
         content = soup.find("div", class_="content")
@@ -40,9 +39,24 @@ class TFNDCrawler():
             for tr in content.find_all("tr")[1:]:
                 result = {}
                 for key, td in zip(keys, tr.find_all("td")[1:]):
-                    if key == "樣品名稱":
-                        result["id"] = td.find("a").get("href").split("=")[-1]
                     result[key] = td.text.strip()
+                    if key == "整合編號":
+                        ty = str(ord(result["整合編號"][0]) - ord("A") + 1)
+                        ty = list(self.config.get(
+                            "TagType").values()).index(ty)
+                        result["食品分類"] = list(
+                            self.config.get("TagType").keys())[ty]
+                    if key == "樣品名稱":
+                        result["ID"] = td.find("a").get("href").split("=")[-1]
                 results.append(result)
         assert len(results) == sz
         return results
+
+    def getdetail(self, ID):
+        res = httpx.get(
+            f"{self.URL}{self.config.get('detailURI')}&f=0&id={ID}")
+        soup = BS(res.text, "html.parser")
+        for tr in soup.find("table").find_all("tr")[1:]:
+            for td in tr.find_all("td")[:-2]:
+                print(td.get("data-th"), td.text)
+        return 0
